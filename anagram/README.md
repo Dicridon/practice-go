@@ -12,3 +12,6 @@ Sample anagram:
 ```
 go test -bench .
 ```
+
+### TIPS:
+Be cautious with spaces and empty strings

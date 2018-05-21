@@ -3,49 +3,47 @@ package anagram
 import "strings"
 
 func FindAnagrams(dictionary []string, word string) (result []string) {
-	word = normalize(word)
 	if len(word) == 0 {
 		return nil
 	}
 
-	charDir := parseCharDic(word)
-	for _, value := range dictionary {
-		ww := normalize(value)
-		// ignore exact match or empty word(not anagram)
-		if ww == word || len(ww) == 0 {
+	word = normalize(word)
+	charHash := make(map[rune]int)
+	for _, c := range word {
+		charHash[c]++
+	}
+	for _, v := range dictionary {
+		refv := normalize(v)
+		if refv == word || len(refv) == 0 {
 			continue
 		}
-
-		if compareDics(charDir, parseCharDic(ww)) {
-			result = append(result, value)
+		if compareDict(toHash(refv), charHash) {
+			result = append(result, v)
 		}
 	}
-	return result
+	return
 }
 
 func normalize(s string) string {
 	return strings.Replace(strings.ToLower(s), " ", "", -1)
 }
 
-func parseCharDic(word string) (result map[rune]int) {
-	result = make(map[rune]int)
-	for _, char := range word {
-		result[char] = result[char] + 1
+func toHash(s string) (res map[rune]int) {
+	res = make(map[rune]int)
+	for _, c := range s {
+		res[c]++
 	}
-
-	return result
+	return
 }
 
-func compareDics(dic1, dic2 map[rune]int) bool {
-	if len(dic1) != len(dic2) {
+func compareDict(d1 map[rune]int, d2 map[rune]int) bool {
+	if len(d1) != len(d2) {
 		return false
 	}
-
-	for key, value := range dic1 {
-		if dic2[key] != value {
+	for k, v := range d1 {
+		if v != d2[k] {
 			return false
 		}
 	}
-
 	return true
 }
